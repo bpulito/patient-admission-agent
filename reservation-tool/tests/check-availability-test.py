@@ -1,11 +1,9 @@
-# Assisted by watsonx Code Assistant
-
 import requests
 import datetime
 import json
 
 # Flask server details
-BASE_URL = "http://localhost:3000"
+BASE_URL = "http://localhost:4000"
 
 # Reservation details
 start_date = datetime.date.today()  # Start reservation from today

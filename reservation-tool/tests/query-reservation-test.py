@@ -5,7 +5,7 @@ import datetime
 import json
 
 # Flask server details
-BASE_URL = "http://localhost:3000"
+BASE_URL = "http://localhost:4000"
 
 patient_id = "test_patient_123"
 

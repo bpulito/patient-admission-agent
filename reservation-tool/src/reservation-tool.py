@@ -4,7 +4,6 @@ This tool uses an Elasticsearch index to maintain a set of patient bed reservati
 /check_availability (GET) - For getting a list of available bed resources.
 /reservation (PUT) - For creating a new reservation.
 /reservation/patient_id (GET) - For getting the reservation for a single patient
-
 """
 from flask import Flask, request, jsonify
 from elasticsearch import Elasticsearch
@@ -218,4 +217,4 @@ def get_patient_reservation(patient_id):
     return jsonify({"reservations": reservations}), 200
 
 if __name__ == '__main__':
-    app.run(port=3000, debug=True)
+    app.run(host='0.0.0.0', port=4000, debug=True)

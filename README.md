@@ -1,7 +1,7 @@
 # patient-admission-agent
 
 ## Setup
-1. pip install -e .
+1. 
 
 ## Solution Limitations
 
