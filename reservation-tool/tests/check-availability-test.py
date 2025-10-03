@@ -1,6 +1,10 @@
 import requests
 import datetime
-import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
+TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 
 # Flask server details
 BASE_URL = "http://localhost:4000"
@@ -9,9 +13,15 @@ BASE_URL = "http://localhost:4000"
 start_date = datetime.date.today()  # Start reservation from today
 length_of_stay = 4  # Reservation for 4 days
 
+# create the APIKEY header to use with the HTTP request.
+headers = {
+    'X-API-KEY': TOOL_APIKEY
+}
+
 # Check bed availability
 availability_response = requests.get(
     f"{BASE_URL}/check_availability",
+    headers=headers,
     params={
         'start_date': start_date.isoformat(),
         'length_of_stay': length_of_stay

@@ -26,12 +26,12 @@ es = Elasticsearch(
   verify_certs=False
 )
 
-es_index_name = os.getenv('ES_INDEX_NAME')
-
-number_of_beds = int(os.getenv('NUMBER_OF_BEDS'))
+ES_INDEX_NAME = os.getenv('ES_INDEX_NAME')
+NUMBER_OF_BEDS = int(os.getenv('NUMBER_OF_BEDS'))
+RESERVATION_TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 
 # Hospital beds configuration
-BEDS = [f'bed-{i}' for i in range(number_of_beds)]
+BEDS = [f'bed-{i}' for i in range(NUMBER_OF_BEDS)]
 
 def lock_reservation_index():
     """
@@ -89,7 +89,7 @@ def get_available_beds(start_date, length_of_stay):
                  }
             }
         }
-        response = es.search(index=es_index_name, body=query)
+        response = es.search(index=ES_INDEX_NAME, body=query)
 
         reserved_beds = [hit['_source']['bed_id'] for hit in response['hits']['hits']]
         potential_beds = [bed for bed in potential_beds if bed not in reserved_beds]
@@ -117,11 +117,11 @@ def get_reservation(patient_id):
         }
     }
     
-    response = es.search(index=es_index_name, body=query)
+    response = es.search(index=ES_INDEX_NAME, body=query)
     reservations = [res['_source'] for res in response['hits']['hits']]
     return reservations
 
-def make_reservation(start_date, length_of_stay, patient_id, first_name, last_name):
+def create_reservation(start_date, length_of_stay, patient_id, first_name, last_name):
     """
     Makes a reservation by finding available beds and creating reservation documents.
 
@@ -163,7 +163,7 @@ def make_reservation(start_date, length_of_stay, patient_id, first_name, last_na
             "reservation_date": start_date + datetime.timedelta(days=day),
             "bed_id": bed_id
         }
-        es.index(index=es_index_name, id=f"{request.json['patient_id']}-{start_date + datetime.timedelta(days=day)}", body=reservation_data)
+        es.index(index=ES_INDEX_NAME, id=f"{request.json['patient_id']}-{start_date + datetime.timedelta(days=day)}", body=reservation_data)
 
     # Finish by unlocking the index so that other threads can create new reservations.
     unlock_reservation_index(guid)
@@ -176,6 +176,11 @@ def check_availability():
     """
     Check bed availability for a given start date and length of stay.
     """
+    # First verify the APIKEY 
+    api_key = request.headers.get('X-API-KEY')  # Access the API key from the security header
+    if api_key != RESERVATION_TOOL_APIKEY:
+        return jsonify({"error": "Invalid API key"}), 401
+
     start_date_string = request.args.get('start_date')
     date_format = "%Y-%m-%d"
     start_date = datetime.datetime.strptime(start_date_string, date_format)
@@ -191,6 +196,10 @@ def create_reservation():
     """
     Reserve a bed for the given start date and length of stay.
     """
+    # First verify the APIKEY 
+    api_key = request.headers.get('X-API-KEY')  # Access the API key from the security header
+    if api_key != RESERVATION_TOOL_APIKEY:
+        return jsonify({"error": "Invalid API key"}), 401
 
     # Extract all the reservation parameters out of the request JSON
     start_date_string = request.json['start_date']
@@ -203,7 +212,7 @@ def create_reservation():
     first_name = request.json['first_name']
     last_name = request.json['last_name']   
 
-    return make_reservation(start_date, length_of_stay, patient_id, first_name, last_name)
+    return create_reservation(start_date, length_of_stay, patient_id, first_name, last_name)
 
 @app.route('/reservation/<patient_id>', methods=['GET'])
 def get_patient_reservation(patient_id):
@@ -213,6 +222,11 @@ def get_patient_reservation(patient_id):
     Args:
         patient_id (string): The ID of the patient whose reservations are to be retrieved.
     """
+    # First verify the APIKEY 
+    api_key = request.headers.get('X-API-KEY')  # Access the API key from the security header
+    if api_key != RESERVATION_TOOL_APIKEY:
+        return jsonify({"error": "Invalid API key"}), 401
+    
     reservations = get_reservation(patient_id)
     return jsonify({"reservations": reservations}), 200
 

@@ -1,17 +1,26 @@
 # Assisted by watsonx Code Assistant
 
 import requests
-import datetime
-import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
+TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 
 # Flask server details
 BASE_URL = "http://localhost:4000"
 
 patient_id = "test_patient_123"
 
+# create the APIKEY header to use with the HTTP request.
+headers = {
+    'X-API-KEY': TOOL_APIKEY
+}
+
 # Check bed availability
 reservation_response = requests.get(
-    f"{BASE_URL}/reservation/{patient_id}"
+    f"{BASE_URL}/reservation/{patient_id}",
+    headers=headers
 )
 
 if reservation_response.status_code == 200:

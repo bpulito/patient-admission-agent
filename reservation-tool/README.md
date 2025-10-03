@@ -10,6 +10,7 @@ This tool uses an Elasticsearch index to maintain a set of patient bed reservati
 | ES_API_KEY | The is your Elasticsearch API key. This is typically generated from a Kibana instance connected to your Elasticsearch DB. |
 | ES_URL | Elastic search URL. If using IBM Cloud Databases, you can find this URL on the overview page (see the HTTPS tab). Note that the URL should include the username and password for your instance. |
 | NUMBER_OF_BEDS | Number of bed resources that can be reserved. |
+| RESERVATION_TOOL_APIKEY | APIKEY needed to access the reservation tool. |
 
 2. Next create the Elasticsearch reservation index by running the **es-create-index.sh** script under./tests/elastic-scripts.
 

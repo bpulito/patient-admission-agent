@@ -3,6 +3,11 @@
 import requests
 import datetime
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
+TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 
 # Flask server details
 BASE_URL = "http://localhost:4000"
@@ -25,8 +30,14 @@ reservation_data = {
     'length_of_stay': length_of_stay
 }
 
+# create the APIKEY header to use with the HTTP request.
+headers = {
+    'X-API-KEY': TOOL_APIKEY
+}
+
 reserve_response = requests.post(
     f"{BASE_URL}/reservation",
+    headers=headers,
     json=reservation_data
 )
 
@@ -36,6 +47,7 @@ if reserve_response.status_code == 201:
     # Query to check if reservation exists
     check_reservation_response = requests.get(
         f"{BASE_URL}/check_availability",
+        headers=headers,
         params={
             'start_date': start_date,
             'length_of_stay': length_of_stay
