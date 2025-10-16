@@ -1,0 +1,245 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Hospital Bed Reservation API",
+        "version": "1.0.0",
+        "description": "API for managing hospital bed reservations."
+    },
+    "servers": [
+        {
+            "url": "https://reservation-system.13i6qeudn7sc.us-east.codeengine.appdomain.cloud"
+        }
+    ],
+    "paths": {
+        "/check_availability": {
+            "get": {
+                "summary": "Check bed availability for a given start date and length of stay.",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "description": "Start date of the availability check in the format YYYY-MM-DD."
+                    },
+                    {
+                        "name": "length_of_stay",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Number of days associated with the query."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of available beds.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid API key."
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": ["X-API-KEY"]
+                    }
+                ]
+            }
+        },
+        "/reservation": {
+            "post": {
+                "summary": "Reserve a bed for the given start date and length of stay.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "length_of_stay": {
+                                        "type": "integer"
+                                    },
+                                    "patient_id": {
+                                        "type": "string"
+                                    },
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "start_date",
+                                    "length_of_stay",
+                                    "patient_id",
+                                    "first_name",
+                                    "last_name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reservation successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "bed_id": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid API key."
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": ["X-API-KEY"]
+                    }
+                ]
+            }
+        },
+        "/reservation/{patient_id}": {
+            "get": {
+                "summary": "Get all reservation documents for a specific patient ID.",
+                "parameters": [
+                    {
+                        "name": "patient_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The ID of the patient whose reservations are to be retrieved."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of reservation documents for the given patient_id.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Reservation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid API key."
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": ["X-API-KEY"]
+                    }
+                ]
+            },
+            "delete": {
+                "summary": "Cancel all reservations for a specific patient ID.",
+                "parameters": [
+                    {
+                        "name": "patient_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The ID of the patient whose reservations are to be cancelled."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation(s) cancelled successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid API key."
+                    },
+                    "404": {
+                        "description": "No reservations found for this patient."
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": ["X-API-KEY"]
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "api_key": {
+                "type": "apiKey",
+                "name": "apikey",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "Reservation": {
+                "type": "object",
+                "properties": {
+                    "patient_id": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "reservation_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "bed_id": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

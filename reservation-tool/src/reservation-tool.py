@@ -3,7 +3,8 @@ This tool uses an Elasticsearch index to maintain a set of patient bed reservati
 
 /check_availability (GET) - For getting a list of available bed resources.
 /reservation (PUT) - For creating a new reservation.
-/reservation/patient_id (GET) - For getting the reservation for a single patient
+/reservation/{patient_id} (GET) - For getting the reservation for a single patient
+/reservation/{patient_id} (DELETE) - For canceling a reservation for a single patient
 """
 from flask import Flask, request, jsonify
 from elasticsearch import Elasticsearch
@@ -20,7 +21,7 @@ print(f"Elasticsearch Index: {os.getenv('ES_INDEX_NAME')}")
 # Initialize Flask app and Elasticsearch client
 app = Flask(__name__)
 
-es = Elasticsearch(
+elastic_search = Elasticsearch(
   os.getenv('ES_URL'),
   api_key=os.getenv('ES_API_KEY'),
   verify_certs=False
@@ -89,7 +90,7 @@ def get_available_beds(start_date, length_of_stay):
                  }
             }
         }
-        response = es.search(index=ES_INDEX_NAME, body=query)
+        response = elastic_search.search(index=ES_INDEX_NAME, body=query)
 
         reserved_beds = [hit['_source']['bed_id'] for hit in response['hits']['hits']]
         potential_beds = [bed for bed in potential_beds if bed not in reserved_beds]
@@ -117,7 +118,7 @@ def get_reservation(patient_id):
         }
     }
     
-    response = es.search(index=ES_INDEX_NAME, body=query)
+    response = elastic_search.search(index=ES_INDEX_NAME, body=query)
     reservations = [res['_source'] for res in response['hits']['hits']]
     return reservations
 
@@ -163,7 +164,7 @@ def create_reservation(start_date, length_of_stay, patient_id, first_name, last_
             "reservation_date": start_date + datetime.timedelta(days=day),
             "bed_id": bed_id
         }
-        es.index(index=ES_INDEX_NAME, id=f"{request.json['patient_id']}-{start_date + datetime.timedelta(days=day)}", body=reservation_data)
+        elastic_search.index(index=ES_INDEX_NAME, id=f"{request.json['patient_id']}-{start_date + datetime.timedelta(days=day)}", body=reservation_data)
 
     # Finish by unlocking the index so that other threads can create new reservations.
     unlock_reservation_index(guid)
@@ -177,7 +178,7 @@ def check_availability():
     Check bed availability for a given start date and length of stay.
     """
     # First verify the APIKEY 
-    api_key = request.headers.get('X-API-KEY')  # Access the API key from the security header
+    api_key = request.headers.get('apikey')  # Access the API key from the security header
     if api_key != RESERVATION_TOOL_APIKEY:
         return jsonify({"error": "Invalid API key"}), 401
 
@@ -192,12 +193,12 @@ def check_availability():
     return jsonify({"available_beds": available_beds}), 200
 
 @app.route('/reservation', methods=['POST'])
-def create_reservation():
+def create_new_reservation():
     """
     Reserve a bed for the given start date and length of stay.
     """
     # First verify the APIKEY 
-    api_key = request.headers.get('X-API-KEY')  # Access the API key from the security header
+    api_key = request.headers.get('apikey')  # Access the API key from the security header
     if api_key != RESERVATION_TOOL_APIKEY:
         return jsonify({"error": "Invalid API key"}), 401
 
@@ -223,12 +224,41 @@ def get_patient_reservation(patient_id):
         patient_id (string): The ID of the patient whose reservations are to be retrieved.
     """
     # First verify the APIKEY 
-    api_key = request.headers.get('X-API-KEY')  # Access the API key from the security header
+    api_key = request.headers.get('apikey')  # Access the API key from the security header
     if api_key != RESERVATION_TOOL_APIKEY:
         return jsonify({"error": "Invalid API key"}), 401
     
     reservations = get_reservation(patient_id)
     return jsonify({"reservations": reservations}), 200
+
+@app.route('/reservation/<patient_id>', methods=['DELETE'])
+def cancel_reservation(patient_id):
+    """
+    Delete all reservation documents for a specific patient ID.
+
+    Args:
+        patient_id (string): The ID of the patient whose reservations are to be deleted.
+    """
+    # First verify the APIKEY 
+    api_key = request.headers.get('apikey')  # Access the API key from the security header
+    if api_key != RESERVATION_TOOL_APIKEY:
+        return jsonify({"error": "Invalid API key"}), 401
+
+    reservations = get_reservation(patient_id)
+    if not reservations:
+        return jsonify({"error": "No reservations found for this patient."}), 404
+    
+    query = {
+            "query": {
+                "match": {
+                    "patient_id": patient_id
+                }
+            }
+        }
+
+    response = elastic_search.delete_by_query(index=ES_INDEX_NAME, body=query)
+
+    return jsonify({"message": f"Reservation(s) cancelled successfully. Deleted {response['deleted']} documents."}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000, debug=True)

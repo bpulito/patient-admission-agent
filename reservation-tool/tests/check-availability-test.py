@@ -7,7 +7,8 @@ load_dotenv()  # take environment variables from .env.
 TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 
 # Flask server details
-BASE_URL = "http://localhost:4000"
+#BASE_URL = "http://localhost:4000"
+BASE_URL = "https://reservation-system.13i6qeudn7sc.us-east.codeengine.appdomain.cloud"
 
 # Reservation details
 start_date = datetime.date.today()  # Start reservation from today
@@ -15,7 +16,7 @@ length_of_stay = 4  # Reservation for 4 days
 
 # create the APIKEY header to use with the HTTP request.
 headers = {
-    'X-API-KEY': TOOL_APIKEY
+    'apikey': TOOL_APIKEY
 }
 
 # Check bed availability

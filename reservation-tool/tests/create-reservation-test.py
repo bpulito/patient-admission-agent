@@ -10,7 +10,8 @@ load_dotenv()  # take environment variables from .env.
 TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 
 # Flask server details
-BASE_URL = "http://localhost:4000"
+#BASE_URL = "http://localhost:4000"
+BASE_URL = "https://reservation-system.13i6qeudn7sc.us-east.codeengine.appdomain.cloud"
 
 # Patient details for reservation
 patient_id = "test_patient_123"
@@ -32,7 +33,7 @@ reservation_data = {
 
 # create the APIKEY header to use with the HTTP request.
 headers = {
-    'X-API-KEY': TOOL_APIKEY
+    'apikey': TOOL_APIKEY
 }
 
 reserve_response = requests.post(
@@ -45,21 +46,18 @@ if reserve_response.status_code == 201:
     print("Reservation successful.")
 
     # Query to check if reservation exists
-    check_reservation_response = requests.get(
-        f"{BASE_URL}/check_availability",
-        headers=headers,
-        params={
-            'start_date': start_date,
-            'length_of_stay': length_of_stay
-        }
+    get_reservation_response = requests.get(
+        f"{BASE_URL}/reservation/{patient_id}",
+        headers=headers
     )
 
-    if check_reservation_response.status_code == 200:
-        bed_id = check_reservation_response.json().get('bed_id')
-        if bed_id:
-            print(f"Reservation for patient {patient_id} exists. bed_id is {bed_id}")
+    if get_reservation_response.status_code == 200:
+        reservations = get_reservation_response.json().get('reservations')
+
+        if len(reservations) > 0:
+            print(f"Reservation for patient {patient_id} exists.")
         else:
-            print("Unexpected: No bed_id returned even though the reservation was successful.")
+            print("Unexpected: No reservation docs found after successful creation of a reservation.")
     else:
         print("Failed to check reservation status.")
 else:

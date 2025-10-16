@@ -1,6 +1,8 @@
 # Assisted by watsonx Code Assistant
 
 import requests
+import datetime
+import json
 import os
 from dotenv import load_dotenv
 
@@ -11,6 +13,7 @@ TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
 #BASE_URL = "http://localhost:4000"
 BASE_URL = "https://reservation-system.13i6qeudn7sc.us-east.codeengine.appdomain.cloud"
 
+# Patient details for reservation
 patient_id = "test_patient_123"
 
 # create the APIKEY header to use with the HTTP request.
@@ -18,17 +21,12 @@ headers = {
     'apikey': TOOL_APIKEY
 }
 
-# Check bed availability
-reservation_response = requests.get(
+cancel_response = requests.delete(
     f"{BASE_URL}/reservation/{patient_id}",
     headers=headers
 )
 
-if reservation_response.status_code == 200:
-    reservations = reservation_response.json().get('reservations', [])
-    if len(reservations) > 0:
-        print(f"Reservations for patient_id: {patient_id}: {reservations}")
-    else:
-        print("No reservations found.")
+if cancel_response.status_code == 200:
+    print("Cancel successful.")
 else:
-    print("Failed to check availability:", reservation_response.text)
+    print(f"Failed to cancel: {cancel_response.text}")

@@ -12,7 +12,7 @@ This tool uses an Elasticsearch index to maintain a set of patient bed reservati
 | NUMBER_OF_BEDS | Number of bed resources that can be reserved. |
 | RESERVATION_TOOL_APIKEY | APIKEY needed to access the reservation tool. |
 
-2. Next create the Elasticsearch reservation index by running the **es-create-index.sh** script under./tests/elastic-scripts.
+2. Next create the Elasticsearch reservation index by running the **es-create-index.sh** script under./elastic-scripts.
 
 ### Run python script locally
 > python ./src/reservation-tool.py
@@ -22,7 +22,7 @@ To build and run docker image of reservation system, make sure you have docker i
 | Command | Details |
 |---------|---------|
 | docker build -t reservation-system . | Build the docker image |
-| docker run -p 4000:4000 --name reservation-system reservation-system:latest | Startup the docker container |
+| docker run -p 4000:4000 --name reservation-system reservation-system:latest | Startup the docker container on Intel hardware |
 
 Cleanup commands:
 | Command | Details |
@@ -32,6 +32,14 @@ Cleanup commands:
 | docker rm -f <container id> | Force remove container | 
 | docker images | Get all images and IDs |
 | docker rmi <image id> | Remove an image |
+
+### Pushing docker image to Code Engine
+| Command | Details |
+|---------|---------|
+| ibmcloud login --sso | Login to IBM cloud |
+| ibmcloud cr login | Login to the IBM cloud container registry |
+| docker tag reservation-system:latest us.icr.io/agent-demos/reservation-system:latest | First tag the image |
+| docker push us.icr.io/agent-demos/reservation-system:latest | Now push the image to the IBM cloud registry |
 
 **Note: All environment variables are still pulled from the .env file installed on the local Docker image. The proper way to do that is to put the environment variables into a docker-compose file and startup the container from compose.**
 

@@ -1,0 +1,91 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Patient Profile Server API",
+    "description": "An API for serving up patient profiles",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://patient-profiles.13i6qeudn7sc.us-east.codeengine.appdomain.cloud",
+      "description": "Patient Profile Server"
+    }
+  ],
+  "paths": {
+    "/profiles": {
+      "get": {
+        "summary": "Get a patient profile",
+        "description": "Get a patient profile",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "query",
+            "description": "Patient identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "patient_DOB",
+            "in": "query",
+            "description": "Patient's date of birth.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/patient"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "apikey",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "patient": {
+        "type": "object",
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "description": "Patient's ID."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Patient's first name."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Patient's last name."
+          },
+          "date_of_birth": {
+            "type": "string",
+            "description": "Patient's date of birth."
+          }
+        }
+      }
+    }
+  }
+}
