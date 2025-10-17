@@ -13,7 +13,9 @@
     "paths": {
         "/check_availability": {
             "get": {
+                "operationId": "check_availability_tool",
                 "summary": "Check bed availability for a given start date and length of stay.",
+                "description": "Check bed availability for a given start date and length of stay.",
                 "parameters": [
                     {
                         "name": "start_date",
@@ -32,7 +34,7 @@
                         "schema": {
                             "type": "integer"
                         },
-                        "description": "Number of days associated with the query."
+                        "description": "Number of days to check for availability. Starting at ther start_date."
                     }
                 ],
                 "responses": {
@@ -62,6 +64,8 @@
         },
         "/reservation": {
             "post": {
+                "operationId": "reserve_bed_tool",
+                "description": "Reserve a bed for the given start date and length of stay.",
                 "summary": "Reserve a bed for the given start date and length of stay.",
                 "requestBody": {
                     "required": true,
@@ -72,19 +76,25 @@
                                 "properties": {
                                     "start_date": {
                                         "type": "string",
-                                        "format": "date"
+                                        "format": "date",
+                                        "description": "Start date of the reservation."
+
                                     },
                                     "length_of_stay": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "description": "Number of days to reserver a bed."
                                     },
                                     "patient_id": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "ID of patient associated with the reservation."
                                     },
                                     "first_name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "First name of the patient associated with the reservation."
                                     },
                                     "last_name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "Last name of the patient associated with the reservation."
                                     }
                                 },
                                 "required": [
@@ -107,10 +117,12 @@
                                     "type": "object",
                                     "properties": {
                                         "message": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "Response message associated with the reservation request."
                                         },
                                         "bed_id": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "The bed_id associated with the reservation."
                                         }
                                     }
                                 }
@@ -130,6 +142,8 @@
         },
         "/reservation/{patient_id}": {
             "get": {
+                "operationId": "get_reservation_tool",
+                "description": "Get all reservation documents for a specific patient ID.",
                 "summary": "Get all reservation documents for a specific patient ID.",
                 "parameters": [
                     {
@@ -167,6 +181,8 @@
                 ]
             },
             "delete": {
+                "operationId": "delete_reservation_tool",
+                "description": "Cancel all reservations for a specific patient ID.",
                 "summary": "Cancel all reservations for a specific patient ID.",
                 "parameters": [
                     {

@@ -4,7 +4,7 @@
   "valid": true,
   "status": "Available",
   "created": "2025-10-13T02:10:31.763Z",
-  "updated": "2025-10-16T03:08:01.417Z",
+  "updated": "2025-10-16T21:45:32.605Z",
   "language": "en",
   "skill_id": "bdd2050d-0e0b-4adc-b21f-a62dd8a16e80",
   "workspace": {
@@ -299,7 +299,7 @@
           }
         ],
         "launch_mode": "learning",
-        "next_action": "fallback",
+        "next_action": "action_15592-2",
         "topic_switch": {
           "allowed_from": true,
           "allowed_into": true,
@@ -313,13 +313,23 @@
           {
             "step": "step_805",
             "type": "standard",
+            "context": {
+              "variables": []
+            },
             "handlers": [],
             "resolver": {
               "type": "invoke_another_action",
               "invoke_action": {
                 "action": "action_25330",
                 "policy": "default",
-                "parameters": null,
+                "parameters": [
+                  {
+                    "value": {
+                      "scalar": "create a reservation"
+                    },
+                    "parameter": "step_688"
+                  }
+                ],
                 "result_variable": "step_805_result_1",
                 "ignore_end_action_steps": false
               }
@@ -649,11 +659,10 @@
                       "text_expression": {
                         "concat": [
                           {
-                            "scalar": "Reservation failed. "
+                            "scalar": "I failed to create the reservation. "
                           },
                           {
-                            "variable": "step_740_result_1",
-                            "variable_path": "body.message"
+                            "skill_variable": "error_response"
                           },
                           {
                             "scalar": ". What else can I help you with?"
@@ -664,6 +673,15 @@
                   ],
                   "response_type": "text",
                   "selection_policy": "sequential"
+                }
+              ]
+            },
+            "context": {
+              "variables": [
+                {
+                  "value": {
+                    "expression": "${error_response}=${step_740_result_1.body.error}"
+                  }
                 }
               ]
             },
@@ -686,86 +704,59 @@
           }
         ],
         "title": "Admit a patient",
-        "action": "action_15592",
+        "action": "action_15592-2",
         "boosts": [],
         "handlers": [],
         "condition": {
-          "intent": "action_15592_intent_8230"
+          "intent": "action_15592_intent_8230-2"
         },
         "variables": [
           {
             "title": "Can not complete reservation for an unregistered patient. Please",
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_297",
             "data_type": "any"
           },
           {
             "title": "What is the start date of the reservation?",
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_504",
             "data_type": "date"
           },
           {
             "title": "No response",
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_740",
             "data_type": "any"
           },
           {
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_740_result_1",
             "data_type": "any"
           },
           {
             "title": "No response",
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_805",
             "data_type": "any"
           },
           {
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_805_result_1",
             "data_type": "any"
           },
           {
             "title": "Reservation was successful! {variable} {variable}'s reservation ",
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_860",
             "data_type": "any"
           },
           {
             "title": "What is the length of stay?",
-            "privacy": {
-              "enabled": false
-            },
             "variable": "step_947",
             "data_type": "number"
           },
           {
-            "title": "Reservation failed. {variable}. What else can I help you with?",
-            "privacy": {
-              "enabled": false
-            },
+            "title": "I failed to create the reservation. {variable}. What else can I ",
             "variable": "step_978",
             "data_type": "any"
           }
         ],
         "launch_mode": "learning",
-        "next_action": "action_25330",
+        "next_action": "fallback",
         "topic_switch": {
           "allowed_from": true,
           "allowed_into": true,
@@ -777,6 +768,38 @@
         "type": "standard",
         "steps": [
           {
+            "step": "step_688",
+            "type": "standard",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Reason for verification."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "question": {
+              "free_text": true
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_688",
+            "next_step": "step_309"
+          },
+          {
             "step": "step_309",
             "type": "standard",
             "output": {
@@ -787,7 +810,31 @@
                       "text_expression": {
                         "concat": [
                           {
-                            "scalar": "What is the patient's ID?"
+                            "scalar": "To confirm, you wish to "
+                          },
+                          {
+                            "variable": "step_688"
+                          },
+                          {
+                            "scalar": " for "
+                          },
+                          {
+                            "skill_variable": "patient_first_name"
+                          },
+                          {
+                            "scalar": " "
+                          },
+                          {
+                            "skill_variable": "patient_last_name"
+                          },
+                          {
+                            "scalar": " who's patient ID is <say-as interpret-as=\"digits\">"
+                          },
+                          {
+                            "skill_variable": "patient_id"
+                          },
+                          {
+                            "scalar": "</say-as>?"
                           }
                         ]
                       }
@@ -800,14 +847,7 @@
               ]
             },
             "context": {
-              "variables": [
-                {
-                  "value": {
-                    "expression": "null"
-                  },
-                  "skill_variable": "patient_id"
-                }
-              ]
+              "variables": []
             },
             "handlers": [
               {
@@ -821,7 +861,7 @@
                           "text_expression": {
                             "concat": [
                               {
-                                "scalar": "I didn't catch that. Enter a number."
+                                "scalar": "I'm sorry, I did not catch that, please restate your response."
                               }
                             ]
                           }
@@ -848,13 +888,428 @@
               }
             ],
             "question": {
-              "entity": "sys-number",
-              "max_tries": 3
+              "entity": "sys-yes-no",
+              "max_tries": 3,
+              "allow_topic_switch": false,
+              "collect_verbatim_response": false,
+              "response_collection_behavior": "always_ask"
             },
             "resolver": {
               "type": "continue"
             },
             "variable": "step_309",
+            "condition": {
+              "and": [
+                {
+                  "exists": {
+                    "skill_variable": "patient_id"
+                  }
+                },
+                {
+                  "expression": "${patient_id}!=null"
+                },
+                {
+                  "eq": [
+                    {
+                      "system_variable": "channel_name"
+                    },
+                    {
+                      "scalar": "Phone"
+                    }
+                  ]
+                }
+              ]
+            },
+            "next_step": "step_111"
+          },
+          {
+            "step": "step_111",
+            "type": "standard",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "To confirm, you wish to "
+                          },
+                          {
+                            "variable": "step_688"
+                          },
+                          {
+                            "scalar": " for "
+                          },
+                          {
+                            "skill_variable": "patient_first_name"
+                          },
+                          {
+                            "scalar": " "
+                          },
+                          {
+                            "skill_variable": "patient_last_name"
+                          },
+                          {
+                            "scalar": " who's patient ID is "
+                          },
+                          {
+                            "skill_variable": "patient_id"
+                          },
+                          {
+                            "scalar": "?"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                }
+              ]
+            },
+            "context": {
+              "variables": []
+            },
+            "handlers": [
+              {
+                "type": "not_found",
+                "title": "validation_not_found_handler",
+                "output": {
+                  "generic": [
+                    {
+                      "values": [
+                        {
+                          "text_expression": {
+                            "concat": [
+                              {
+                                "scalar": "I'm sorry, I did not catch that, please restate your response."
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "response_type": "text",
+                      "selection_policy": "incremental"
+                    }
+                  ]
+                },
+                "handler": "validation_not_found_handler",
+                "resolver": {
+                  "type": "prompt_again"
+                },
+                "next_handler": "validation_not_found_max_tries_handler"
+              },
+              {
+                "type": "not_found_max_tries",
+                "title": "validation_not_found_max_tries_handler",
+                "handler": "validation_not_found_max_tries_handler",
+                "resolver": {
+                  "type": "fallback"
+                }
+              }
+            ],
+            "question": {
+              "entity": "sys-yes-no",
+              "max_tries": 3,
+              "allow_topic_switch": false,
+              "collect_verbatim_response": false,
+              "response_collection_behavior": "always_ask"
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_111",
+            "condition": {
+              "and": [
+                {
+                  "exists": {
+                    "skill_variable": "patient_id"
+                  }
+                },
+                {
+                  "expression": "${patient_id}!=null"
+                },
+                {
+                  "eq": [
+                    {
+                      "system_variable": "channel_name"
+                    },
+                    {
+                      "scalar": "Web chat"
+                    }
+                  ]
+                }
+              ]
+            },
+            "next_step": "step_440"
+          },
+          {
+            "step": "step_440",
+            "type": "standard",
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_440",
+            "condition": {
+              "or": [
+                {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "variable": "step_309"
+                        },
+                        {
+                          "scalar": "yes"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "variable": "step_111"
+                        },
+                        {
+                          "scalar": "yes"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "next_step": "step_725"
+          },
+          {
+            "step": "step_725",
+            "type": "standard",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Ok, so you wish to "
+                          },
+                          {
+                            "variable": "step_688"
+                          },
+                          {
+                            "scalar": " for a different patient?"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                }
+              ]
+            },
+            "handlers": [
+              {
+                "type": "not_found",
+                "title": "validation_not_found_handler",
+                "output": {
+                  "generic": [
+                    {
+                      "values": [
+                        {
+                          "text_expression": {
+                            "concat": [
+                              {
+                                "scalar": "I'm sorry, I did not catch that, please restate your response."
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "response_type": "text",
+                      "selection_policy": "incremental"
+                    }
+                  ]
+                },
+                "handler": "validation_not_found_handler",
+                "resolver": {
+                  "type": "prompt_again"
+                },
+                "next_handler": "validation_not_found_max_tries_handler"
+              },
+              {
+                "type": "not_found_max_tries",
+                "title": "validation_not_found_max_tries_handler",
+                "handler": "validation_not_found_max_tries_handler",
+                "resolver": {
+                  "type": "fallback"
+                }
+              }
+            ],
+            "question": {
+              "entity": "sys-yes-no",
+              "max_tries": 3,
+              "allow_topic_switch": false,
+              "collect_verbatim_response": false,
+              "response_collection_behavior": "always_ask"
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_725",
+            "condition": {
+              "or": [
+                {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "variable": "step_309"
+                        },
+                        {
+                          "scalar": "no"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "and": [
+                    {
+                      "eq": [
+                        {
+                          "variable": "step_111"
+                        },
+                        {
+                          "scalar": "no"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "next_step": "step_312"
+          },
+          {
+            "step": "step_312",
+            "type": "standard",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Ok, what else can I help you with?"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_312",
+            "condition": {
+              "eq": [
+                {
+                  "variable": "step_725"
+                },
+                {
+                  "scalar": "no"
+                }
+              ]
+            },
+            "next_step": "step_777"
+          },
+          {
+            "step": "step_777",
+            "type": "standard",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "What is the patient's ID?"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                }
+              ]
+            },
+            "context": {
+              "variables": []
+            },
+            "handlers": [
+              {
+                "type": "not_found",
+                "title": "validation_not_found_handler",
+                "output": {
+                  "generic": [
+                    {
+                      "values": [
+                        {
+                          "text_expression": {
+                            "concat": [
+                              {
+                                "scalar": "I'm sorry, I did not catch that, please restate your response."
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "response_type": "text",
+                      "selection_policy": "incremental"
+                    }
+                  ]
+                },
+                "handler": "validation_not_found_handler",
+                "resolver": {
+                  "type": "prompt_again"
+                },
+                "next_handler": "validation_not_found_max_tries_handler"
+              },
+              {
+                "type": "not_found_max_tries",
+                "title": "validation_not_found_max_tries_handler",
+                "handler": "validation_not_found_max_tries_handler",
+                "resolver": {
+                  "type": "fallback"
+                }
+              }
+            ],
+            "question": {
+              "entity": "entity_19594",
+              "max_tries": 3
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_777",
             "next_step": "step_967"
           },
           {
@@ -954,7 +1409,7 @@
                   "query": [
                     {
                       "value": {
-                        "variable": "step_309"
+                        "variable": "step_777"
                       },
                       "parameter": "patient_id"
                     },
@@ -983,28 +1438,7 @@
                       "text_expression": {
                         "concat": [
                           {
-                            "scalar": "Patient profile found. Patient name is "
-                          },
-                          {
-                            "variable": "step_419_result_1",
-                            "variable_path": "body.first_name"
-                          },
-                          {
-                            "scalar": " "
-                          },
-                          {
-                            "variable": "step_419_result_1",
-                            "variable_path": "body.last_name"
-                          },
-                          {
-                            "scalar": ". The date of birth is "
-                          },
-                          {
-                            "variable": "step_419_result_1",
-                            "variable_path": "body.date_of_birth"
-                          },
-                          {
-                            "scalar": "."
+                            "scalar": "I verified the patient."
                           }
                         ]
                       }
@@ -1019,7 +1453,7 @@
               "variables": [
                 {
                   "value": {
-                    "variable": "step_309"
+                    "variable": "step_777"
                   },
                   "skill_variable": "patient_id"
                 },
@@ -1113,7 +1547,7 @@
             }
           }
         ],
-        "title": "Access Patient Record",
+        "title": "Verify Patient",
         "action": "action_25330",
         "boosts": [],
         "handlers": [],
@@ -1122,12 +1556,28 @@
         },
         "variables": [
           {
-            "title": "What is the patient's ID?",
+            "title": "To confirm, you wish to {variable} for {variable} {variable} who",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_111",
+            "data_type": "yes_no"
+          },
+          {
+            "title": "To confirm, you wish to {variable} for {variable} {variable} who",
             "privacy": {
               "enabled": false
             },
             "variable": "step_309",
-            "data_type": "number"
+            "data_type": "yes_no"
+          },
+          {
+            "title": "Ok, what else can I help you with?",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_312",
+            "data_type": "any"
           },
           {
             "title": "Failed to find patient record. {variable}",
@@ -1138,7 +1588,7 @@
             "data_type": "any"
           },
           {
-            "title": "Patient profile found. Patient name is {variable} {variable}. Th",
+            "title": "I verified the patient.",
             "privacy": {
               "enabled": false
             },
@@ -1146,7 +1596,7 @@
             "data_type": "any"
           },
           {
-            "title": "",
+            "title": "No response",
             "privacy": {
               "enabled": false
             },
@@ -1158,6 +1608,38 @@
               "enabled": false
             },
             "variable": "step_419_result_1",
+            "data_type": "any"
+          },
+          {
+            "title": "No response",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_440",
+            "data_type": "any"
+          },
+          {
+            "title": "Reason for verification.",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_688",
+            "data_type": "any"
+          },
+          {
+            "title": "Ok, so you wish to {variable} for a different patient?",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_725",
+            "data_type": "yes_no"
+          },
+          {
+            "title": "What is the patient's ID?",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_777",
             "data_type": "any"
           },
           {
@@ -1190,9 +1672,17 @@
               "invoke_action": {
                 "action": "action_25330",
                 "policy": "default",
-                "parameters": null,
+                "parameters": [
+                  {
+                    "value": {
+                      "scalar": "cancel the reservation"
+                    },
+                    "parameter": "step_688"
+                  }
+                ],
                 "result_variable": "step_772_result_1",
-                "ignore_end_action_steps": false
+                "ignore_end_action_steps": false,
+                "suppress_response_display": false
               }
             },
             "variable": "step_772",
@@ -1456,9 +1946,17 @@
               "invoke_action": {
                 "action": "action_25330",
                 "policy": "default",
-                "parameters": null,
+                "parameters": [
+                  {
+                    "value": {
+                      "scalar": "check a reservation"
+                    },
+                    "parameter": "step_688"
+                  }
+                ],
                 "result_variable": "step_207_result_1",
-                "ignore_end_action_steps": false
+                "ignore_end_action_steps": false,
+                "suppress_response_display": false
               }
             },
             "variable": "step_207",
@@ -1557,19 +2055,31 @@
                       "text_expression": {
                         "concat": [
                           {
-                            "scalar": "Reservation found! Start date of reservation is "
+                            "scalar": "I found the reservation for "
                           },
                           {
-                            "skill_variable": "start_date"
+                            "skill_variable": "patient_first_name"
                           },
                           {
-                            "scalar": ". Length of stay is "
+                            "scalar": " "
+                          },
+                          {
+                            "skill_variable": "patient_last_name"
+                          },
+                          {
+                            "scalar": ". Here are the details. The start date of reservation is "
+                          },
+                          {
+                            "skill_variable": "start_date_string"
+                          },
+                          {
+                            "scalar": ". The length of stay is "
                           },
                           {
                             "skill_variable": "length_of_stay"
                           },
                           {
-                            "scalar": ". Bed ID is "
+                            "scalar": " days and the reservation ID is "
                           },
                           {
                             "skill_variable": "bed_id"
@@ -1590,7 +2100,7 @@
               "variables": [
                 {
                   "value": {
-                    "expression": "${start_date}=${step_565_result_1.body}.reservations[0].reservation_date"
+                    "expression": "${start_date_string}=${step_565_result_1.body}.reservations[0].reservation_date.reformatDateTime(\"EEEE, MMMM d, yyyy\")"
                   }
                 },
                 {
@@ -1641,13 +2151,7 @@
                       "text_expression": {
                         "concat": [
                           {
-                            "scalar": "No reservation found for patient ID "
-                          },
-                          {
-                            "skill_variable": "patient_id"
-                          },
-                          {
-                            "scalar": ". What else can I help you with?"
+                            "scalar": "No reservation found for this patient. What else can I help you with?"
                           }
                         ]
                       }
@@ -1778,7 +2282,7 @@
             "data_type": "any"
           },
           {
-            "title": "No reservation found for patient ID {variable}. What else can I ",
+            "title": "No reservation found for this patient. What else can I help you ",
             "privacy": {
               "enabled": false
             },
@@ -1801,7 +2305,7 @@
             "data_type": "any"
           },
           {
-            "title": "Reservation found! Start date of reservation is {variable}. Leng",
+            "title": "I found the reservation for {variable} {variable}. Here are the ",
             "privacy": {
               "enabled": false
             },
@@ -1810,7 +2314,68 @@
           }
         ],
         "launch_mode": "learning",
-        "next_action": "action_15592",
+        "next_action": "action_25330",
+        "topic_switch": {
+          "allowed_from": true,
+          "allowed_into": true,
+          "never_return": false
+        },
+        "disambiguation_opt_out": false
+      },
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_571",
+            "type": "standard",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Goodbye, it was nice talking to you."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                },
+                {
+                  "response_type": "end_session"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_571"
+          }
+        ],
+        "title": "End Session",
+        "action": "action_8384",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "intent": "action_8384_intent_8710"
+        },
+        "variables": [
+          {
+            "title": "Goodbye, it was nice talking to you.",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_571",
+            "data_type": "any"
+          }
+        ],
+        "launch_mode": "learning",
+        "next_action": "action_32794",
         "topic_switch": {
           "allowed_from": true,
           "allowed_into": true,
@@ -1829,7 +2394,13 @@
                 {
                   "values": [
                     {
-                      "text": "I'm afraid I don't understand. Please rephrase your question."
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "I'm currently not trained to handle that request. At the moment I can admit a patient, check availability, check the details on an existing reservation or cancel a reservation."
+                          }
+                        ]
+                      }
                     }
                   ],
                   "response_type": "text",
@@ -1903,7 +2474,10 @@
         },
         "variables": [
           {
-            "title": "I am afraid I do not understand what you are asking, please re-p",
+            "title": "I'm currently not trained to handle that request. At the moment ",
+            "privacy": {
+              "enabled": false
+            },
             "variable": "step_001",
             "data_type": "any"
           },
@@ -2319,12 +2893,39 @@
             "output": {
               "generic": [
                 {
+                  "channels": [
+                    {
+                      "channel": "voice_telephony"
+                    }
+                  ],
+                  "command_info": {
+                    "type": "configure",
+                    "parameters": {
+                      "update_strategy": "merge",
+                      "narrowband_recognize": {
+                        "model": "en-US",
+                        "sad_module": 2,
+                        "timestamps": true,
+                        "smart_formatting": true,
+                        "speech_begin_event": true,
+                        "smart_formatting_version": 2,
+                        "speech_event_sensitivity": 0.1,
+                        "x-watson-learning-opt-out": true,
+                        "end_of_phrase_silence_time": 1.2,
+                        "speech_detector_sensitivity": 0.8,
+                        "background_audio_suppression": 0.7
+                      }
+                    }
+                  },
+                  "response_type": "speech_to_text"
+                },
+                {
                   "values": [
                     {
                       "text_expression": {
                         "concat": [
                           {
-                            "scalar": "Hello! I'm a hospital admissions assistant. What can I help you with today?"
+                            "scalar": "<break time=\"2500ms\"></break> Hello! I'm a patient admissions assistant. What can I help you with today?"
                           }
                         ]
                       }
@@ -2351,7 +2952,7 @@
         },
         "variables": [
           {
-            "title": "Hello! I'm a hospital admissions assistant. What can I help you ",
+            "title": "<break time=\"2500ms\"></break> Hello! I'm a patient admissions as",
             "privacy": {
               "enabled": false
             },
@@ -2359,7 +2960,7 @@
             "data_type": "any"
           }
         ],
-        "next_action": "action_32794",
+        "next_action": "action_8384",
         "disambiguation_opt_out": true
       }
     ],
@@ -2375,17 +2976,35 @@
           },
           {
             "text": "Check Availability"
+          },
+          {
+            "text": "I need to check availability"
+          },
+          {
+            "text": "I need to check availability for a reservation"
           }
         ]
       },
       {
-        "intent": "action_15592_intent_8230",
+        "intent": "action_15592_intent_8230-2",
         "examples": [
           {
             "text": "Admit a patient"
           },
           {
             "text": "I need to admit a patient"
+          },
+          {
+            "text": "I need to admit patient"
+          },
+          {
+            "text": "I need to create a new reservation"
+          },
+          {
+            "text": "I need to create a reservation."
+          },
+          {
+            "text": "I want to admit a patient"
           }
         ]
       },
@@ -2398,6 +3017,18 @@
         "examples": [
           {
             "text": "Cancel Reservation"
+          },
+          {
+            "text": "Delete a reservation"
+          },
+          {
+            "text": "I need to cancel a reservation for patient"
+          },
+          {
+            "text": "I need to cancel that reservation"
+          },
+          {
+            "text": "I need to delete that reservation"
           }
         ]
       },
@@ -2411,7 +3042,36 @@
             "text": "Get Reservation"
           },
           {
+            "text": "I need to check a reservation."
+          },
+          {
+            "text": "I need to get a reservation."
+          },
+          {
             "text": "Verify a reservation"
+          }
+        ]
+      },
+      {
+        "intent": "action_8384_intent_8710",
+        "examples": [
+          {
+            "text": "End Session"
+          },
+          {
+            "text": "Goodbye"
+          },
+          {
+            "text": "I'm done"
+          },
+          {
+            "text": "So long"
+          },
+          {
+            "text": "That's all"
+          },
+          {
+            "text": "That's it"
           }
         ]
       },
@@ -2442,6 +3102,19 @@
         "entity": "danger_words",
         "values": [],
         "fuzzy_match": false
+      },
+      {
+        "entity": "entity_19594",
+        "values": [
+          {
+            "type": "patterns",
+            "value": "Regular_expression",
+            "patterns": [
+              "\\d{8}"
+            ]
+          }
+        ],
+        "fuzzy_match": true
       },
       {
         "entity": "profane_words",
@@ -2546,24 +3219,22 @@
         "description": ""
       },
       {
-        "title": "start_date",
+        "title": "start_date_string",
         "privacy": {
           "enabled": false
         },
-        "variable": "start_date",
-        "data_type": "date",
-        "description": "",
-        "initial_value": {
-          "time": {
-            "value": "Invalid date"
-          }
-        }
+        "variable": "start_date_string",
+        "data_type": "string",
+        "description": ""
       }
     ],
     "data_types": [],
     "collections": [],
     "counterexamples": [],
     "system_settings": {
+      "nlp": {
+        "model": "latest"
+      },
       "variable": {
         "format": {
           "time": {
@@ -2580,8 +3251,24 @@
       "auto_learn": {
         "apply": true
       },
+      "launch_mode": {
+        "default": "learning",
+        "enabled": false,
+        "learning": {
+          "step_retry_threshold": 2,
+          "use_connect_to_support": "more_often",
+          "single_answer_clarification": "more_often",
+          "disambiguation_clarification": "more_often"
+        },
+        "confident": {
+          "step_retry_threshold": 4,
+          "use_connect_to_support": "sometimes",
+          "single_answer_clarification": "sometimes",
+          "disambiguation_clarification": "sometimes"
+        }
+      },
       "topic_switch": {
-        "enabled": true,
+        "enabled": false,
         "messages": {
           "enable_confirmation": true,
           "confirmation_failure": {
@@ -2659,6 +3346,12 @@
           "output": {
             "enabled": true
           }
+        },
+        "slot_filling": {
+          "enabled": true
+        },
+        "general_purpose_answering": {
+          "enabled": false
         }
       },
       "disambiguation": {

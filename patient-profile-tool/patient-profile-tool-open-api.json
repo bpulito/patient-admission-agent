@@ -14,6 +14,7 @@
   "paths": {
     "/profiles": {
       "get": {
+        "operationId": "get_profile_tool",
         "summary": "Get a patient profile",
         "description": "Get a patient profile",
         "parameters": [

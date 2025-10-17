@@ -1,5 +1,3 @@
-# Assisted by watsonx Code Assistant
-
 import requests
 import datetime
 import json
