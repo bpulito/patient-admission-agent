@@ -54,4 +54,4 @@ You can also test slot filling by saying something like:
 
 ## Try the Patient Agent
 
-The patient agent can be accessed from the following [webpage](./patient-agent/patient-agent-homepage.html).
+The patient agent can be accessed from the following [webpage](https://bpulito.github.io/patient-admission-agent/patient-agent/patient-agent-homepage.html).
