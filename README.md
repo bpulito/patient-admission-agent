@@ -5,7 +5,7 @@ This project contains the following two implementations of a patient admissions 
 
 - **patient-assistant**: This assistant is built on a traditional Conversation AI plaform (watsonx Orchestrate Assistant Builder) which relies on a classifier and the two REST based services described above (reservation-tool and a patient-profile-tool). It provides fairly deterministic responses based on the following four intents: admit a patient, check availbility, check a reservation or cancel a reservation. This assistant can be accessed via webchat or via a phone number.
 
-- **patient-agent**: This agent is built on a modern LangGrpah like platform (watsonx Orchestrate Agent Builder) which relies on an LLM (llama-3-2-90b-vision-instruct) and the two tools described above (reservation-tool and a patient-profile-tool). Because all orchestration is managed by an LLM the responses from this agent are less deterministic but it is more flexible in the types of interactions it can handle.
+- **patient-agent**: This agent is built on a modern LangGrpah like platform (watsonx Orchestrate Agent Builder) which relies on an LLM (llama-3-2-90b-vision-instruct) and the two tools described above (reservation-tool and a patient-profile-tool). Note that the watsonx Orchestrate's agent builder spilts up the reservation tool into 4 different tools, one for each REST method in the tool. Because all orchestration is managed by an LLM, the responses from this agent are less deterministic but it is more flexible in the types of interactions it can handle.
 
 Note that the two tools are integrated into the assistant and agent via OpenAPI scripts also included in this repo.
 
