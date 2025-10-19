@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
-TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
+TOOL_BEARER_TOKEN = os.getenv('RESERVATION_TOOL_BEARER_TOKEN')
 
 # Flask server details
 #BASE_URL = "http://localhost:4000"
@@ -31,7 +31,7 @@ reservation_data = {
 
 # create the APIKEY header to use with the HTTP request.
 headers = {
-    'apikey': TOOL_APIKEY
+    'Authorization': 'Bearer ' + TOOL_BEARER_TOKEN
 }
 
 reserve_response = requests.post(

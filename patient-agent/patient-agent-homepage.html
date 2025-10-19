@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Admissions Agent</title>
+</head>
+
+<body>
+    <div id="root">
+        <h1>Patient Admissions Agent</h1>
+        <p>Instructions:</p>
+        <ol>
+            <li>Click on the chat icon in the lower left corner of the page.</li>
+            <li>Click on one of the provided starters (e.g. Admit a patient).</li>
+            <li>You can use any patient ID and date of birth.</li>
+        </ol>
+    </div>
+    
+    <div id="chat">
+    </div>
+
+    <script>
+        window.wxOConfiguration = {
+            orchestrationID: "8655e102985dfb532b1b5eed60afb4b7_4dd6daea-0f5d-4e88-91e3-fb58fc0290e6",
+            hostURL: "https://us-south.watson-orchestrate.cloud.ibm.com",
+            rootElementID: "chat",
+            deploymentPlatform: "ibmcloud",
+            crn: "crn:v1:bluemix:public:watsonx-orchestrate:us-south:a/8655e102985dfb532b1b5eed60afb4b7:4dd6daea-0f5d-4e88-91e3-fb58fc0290e6::",
+            chatOptions: {
+                agentId: "e36b502b-3675-4468-9d46-09f2d27c69c4",
+            }
+        };
+        setTimeout(function () {
+            const script = document.createElement('script');
+            script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+            script.addEventListener('load', function () {
+                wxoLoader.init();
+            });
+            document.body.appendChild(script);
+        }, 0);                     
+    </script>
+</body>
+
+</html>

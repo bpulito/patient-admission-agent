@@ -29,7 +29,7 @@ elastic_search = Elasticsearch(
 
 ES_INDEX_NAME = os.getenv('ES_INDEX_NAME')
 NUMBER_OF_BEDS = int(os.getenv('NUMBER_OF_BEDS'))
-RESERVATION_TOOL_APIKEY = os.getenv('RESERVATION_TOOL_APIKEY')
+RESERVATION_TOOL_BEARER_TOKEN = os.getenv('RESERVATION_TOOL_BEARER_TOKEN')
 
 # Hospital beds configuration
 BEDS = [f'bed-{i}' for i in range(NUMBER_OF_BEDS)]
@@ -171,16 +171,38 @@ def create_reservation(start_date, length_of_stay, patient_id, first_name, last_
     
     return jsonify({"message": "Reservation successful.", "bed_id": bed_id}), 201
 
+def verify_bearer_token(request):
+
+    # If no Bearer Token was defined always return True
+    if RESERVATION_TOOL_BEARER_TOKEN is None:
+        return True
+
+    # Try the Authorization header.
+    authorization_header = request.headers.get('Authorization')
+    if authorization_header is not None:
+        parts = authorization_header.split()
+        bearer_token = parts[1]
+
+        if bearer_token is not None:
+            if bearer_token != RESERVATION_TOOL_BEARER_TOKEN:
+                return False
+            else:
+                return True
+        else:
+            return False
+    else:
+        return False
+
+
 # REST API endpoints
 @app.route('/check_availability', methods=['GET'])
 def check_availability():
     """
     Check bed availability for a given start date and length of stay.
     """
-    # First verify the APIKEY 
-    api_key = request.headers.get('apikey')  # Access the API key from the security header
-    if api_key != RESERVATION_TOOL_APIKEY:
-        return jsonify({"error": "Invalid API key"}), 401
+    # First verify the Bearer Token 
+    if verify_bearer_token(request) == False:
+        return jsonify({"error": "Invalid Bearer Token"}), 401
 
     start_date_string = request.args.get('start_date')
     date_format = "%Y-%m-%d"
@@ -197,10 +219,9 @@ def create_new_reservation():
     """
     Reserve a bed for the given start date and length of stay.
     """
-    # First verify the APIKEY 
-    api_key = request.headers.get('apikey')  # Access the API key from the security header
-    if api_key != RESERVATION_TOOL_APIKEY:
-        return jsonify({"error": "Invalid API key"}), 401
+    # First verify the Bearer Token 
+    if verify_bearer_token(request) == False:
+        return jsonify({"error": "Invalid Bearer Token"}), 401
 
     # Extract all the reservation parameters out of the request JSON
     start_date_string = request.json['start_date']
@@ -223,10 +244,9 @@ def get_patient_reservation(patient_id):
     Args:
         patient_id (string): The ID of the patient whose reservations are to be retrieved.
     """
-    # First verify the APIKEY 
-    api_key = request.headers.get('apikey')  # Access the API key from the security header
-    if api_key != RESERVATION_TOOL_APIKEY:
-        return jsonify({"error": "Invalid API key"}), 401
+    # First verify the Bearer Token 
+    if verify_bearer_token(request) == False:
+        return jsonify({"error": "Invalid Bearer Token"}), 401
     
     reservations = get_reservation(patient_id)
     return jsonify({"reservations": reservations}), 200
@@ -239,10 +259,9 @@ def cancel_reservation(patient_id):
     Args:
         patient_id (string): The ID of the patient whose reservations are to be deleted.
     """
-    # First verify the APIKEY 
-    api_key = request.headers.get('apikey')  # Access the API key from the security header
-    if api_key != RESERVATION_TOOL_APIKEY:
-        return jsonify({"error": "Invalid API key"}), 401
+    # First verify the Bearer Token 
+    if verify_bearer_token(request) == False:
+        return jsonify({"error": "Invalid Bearer Token"}), 401
 
     reservations = get_reservation(patient_id)
     if not reservations:

@@ -73,7 +73,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "api_key": ["apikey"]
                     }
                 ]
             }
@@ -167,7 +167,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "api_key": ["apikey"]
                     }
                 ]
             }
@@ -224,7 +224,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "api_key": ["apikey"]
                     }
                 ]
             },
@@ -284,7 +284,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "api_key": ["apikey"]
                     }
                 ]
             }
@@ -292,9 +292,10 @@
     },
     "components": {
         "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer"
+            "api_key": {
+                "type": "apiKey",
+                "name": "apikey",
+                "in": "header"
             }
         },
         "schemas": {

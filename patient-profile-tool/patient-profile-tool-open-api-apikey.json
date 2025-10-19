@@ -67,7 +67,7 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "api_key": ["x-api-key"]
           }
         ]
       }
@@ -75,9 +75,10 @@
   },
   "components": {
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "api_key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header"
       }
     },
     "schemas": {

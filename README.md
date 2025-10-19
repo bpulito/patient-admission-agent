@@ -17,7 +17,7 @@ There are a number of steps required to setup each of these assistants/agents. T
 - [patient-assistant setup](./patient-assistant/README.md)
 - [patient-agent setup](./patient-agent/README.md)
 
-## Test the Patient Assistant
+## Try the Patient Assistant
 
 There are two ways to test the patient assistant:
 
@@ -28,7 +28,7 @@ I used the pre-built webchat client as a front-end digital channel to demonstrat
 I used a Twilio SIP trunk to connect to a provisioned phone channel on the assistant:
 - Voice Demo: Call **1-339-329-9194** and follow the script.
 
-### Test Script
+### Sample Script
 Feel free to veer off from this script but this will help you get started working with the patient assistant. 
 
 1. User: "I want to admit a patient."
@@ -52,4 +52,6 @@ Note that if a reservation already exist you may get an error. If this happens y
 You can also test slot filling by saying something like:
 1. User: "I need to admit patient 12345678. The patient's date of birth is June 4, 1999."
 
-## Test the Patient Agent
+## Try the Patient Agent
+
+The patient agent can be accessed from the following [webpage](./patient-agent/patient-agent-homepage.html).
