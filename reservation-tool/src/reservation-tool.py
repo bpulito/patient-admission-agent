@@ -34,6 +34,7 @@ RESERVATION_TOOL_BEARER_TOKEN = os.getenv('RESERVATION_TOOL_BEARER_TOKEN')
 # Hospital beds configuration
 BEDS = [f'bed-{i}' for i in range(NUMBER_OF_BEDS)]
 
+# Used to lock the elasticsearch index so that only one thread at a time can make changes to the reservation index.
 def lock_reservation_index():
     """
     Method used to lock the index while making a reservation or updating a reservation.
@@ -55,6 +56,7 @@ def lock_reservation_index():
     guid = str(uuid.uuid4())
     return (guid)
 
+# Used to unlock the elasticsearch index so that other threads can make changes.
 def unlock_reservation_index(guid):
     """
     Method used to unlock the index while making a reservation or updating a reservation.
@@ -66,6 +68,7 @@ def unlock_reservation_index(guid):
     """
     return
 
+# Used to change general availability of beds on the specified date.
 def get_available_beds(start_date, length_of_stay):
     """
     Returns a list of available beds for the given start_date and length_of_stay.
@@ -98,6 +101,7 @@ def get_available_beds(start_date, length_of_stay):
 
     return potential_beds
 
+# Used to access all the documents related to the reservation associated with a specific patient.
 def get_reservation(patient_id):
     """
     Retrieves all reservation documents associated with a specific patient ID.
@@ -122,6 +126,7 @@ def get_reservation(patient_id):
     reservations = [res['_source'] for res in response['hits']['hits']]
     return reservations
 
+# Used to creates a new bed reservation using elasticsearch.
 def create_reservation(start_date, length_of_stay, patient_id, first_name, last_name):
     """
     Makes a reservation by finding available beds and creating reservation documents.
@@ -171,10 +176,15 @@ def create_reservation(start_date, length_of_stay, patient_id, first_name, last_
     
     return jsonify({"message": "Reservation successful.", "bed_id": bed_id}), 201
 
+# Used to verify the bearer token.
 def verify_bearer_token(request):
+    """
+    Pulls the bearer token from the request and verifies it against the configured bearer token.
+    """
 
     # If no Bearer Token was defined always return True
     if RESERVATION_TOOL_BEARER_TOKEN is None:
+        print ("WARNING: the reservation tool is unsecured. You should setup authentication by configuring a bearer token ASAP.")
         return True
 
     # Try the Authorization header.
