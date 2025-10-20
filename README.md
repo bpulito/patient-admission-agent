@@ -10,7 +10,7 @@ This project contains the following two implementations of a patient admissions 
 Note that the two tools are integrated into the assistant and agent via OpenAPI scripts also included in this repo.
 
 ## Design Details
-Download the [patient-admission-challenge.pdf](./patient-admission-challenge.pdf) to lean more about what was implemented. That slide deck includes:
+Download the [patient-admission-challenge.pdf](./patient-admission-challenge.pdf) to learn more about what was implemented. That slide deck includes:
 - Technical overview
 - Architectural drawings
 - Flow diagrams
