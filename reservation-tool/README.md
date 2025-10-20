@@ -19,7 +19,7 @@ See the Open API spec for details on the API: [reservation-tool-open-api.json](.
 | NUMBER_OF_BEDS | Number of bed resources that can be reserved. |
 | RESERVATION_TOOL_BEARER_TOKEN | Bearer Token needed to access the reservation tool. |
 
-2. Next create the Elasticsearch reservation index by running the **es-create-index.sh** script under./elastic-scripts.
+2. Next create the Elasticsearch reservation index by running the **es-create-index.sh** script under: [./elastic-scripts/es-create-index.sh](./elastic-scripts/es-create-index.sh).
 
 ### Test locally
 You can run the reservation tool on your local machine by using pythin to start the reservation-tool script:
