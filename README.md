@@ -10,7 +10,7 @@ This project contains the following two implementations of a patient admissions 
 Note that the two tools are integrated into the assistant and agent via OpenAPI scripts also included in this repo.
 
 ## Design Details
-Go to the [patient-admission-challenge.pdf](./patient-admission-challenge.pdf) to go deeper on all the details about the project. That slide deck includes:
+Download the [patient-admission-challenge.pdf](./patient-admission-challenge.pdf) to lean more about what was implemented. That slide deck includes:
 - Technical overview
 - Architectural drawings
 - Flow diagrams
@@ -30,7 +30,7 @@ There are two ways to test the patient assistant:
 
 1. I used the pre-built watsonx Orchestrate webchat client and channel to demonstrate the assistant:
 
-    - WebChat Demo: Click on the following [link](https://web-chat.global.assistant.watson.appdomain.cloud/preview.html?backgroundImageURL=https%3A%2F%2Fus-south.watson-orchestrate.cloud.ibm.com%2Fmfe_assistants%2Fpublic%2Fimages%2Fupx-4dd6daea-0f5d-4e88-91e3-fb58fc0290e6%3A%3A200d35c1-8665-46bb-9bd7-0c75586f256c&integrationID=cdcb6e0a-4b3e-4573-b8aa-3d3227390539&region=wxo-us-south&serviceInstanceID=4dd6daea-0f5d-4e88-91e3-fb58fc0290e6). Once the page loads click on the webchat icon in the bottom right corner of the sample page. From there you can follow the script.
+    - WebChat Demo: Click on the following [link](https://web-chat.global.assistant.watson.appdomain.cloud/preview.html?backgroundImageURL=https%3A%2F%2Fus-south.watson-orchestrate.cloud.ibm.com%2Fmfe_assistants%2Fpublic%2Fimages%2Fupx-4dd6daea-0f5d-4e88-91e3-fb58fc0290e6%3A%3A200d35c1-8665-46bb-9bd7-0c75586f256c&integrationID=cdcb6e0a-4b3e-4573-b8aa-3d3227390539&region=wxo-us-south&serviceInstanceID=4dd6daea-0f5d-4e88-91e3-fb58fc0290e6). Once the page loads click on the webchat icon in the bottom right corner of the sample page. From there you can follow the sample script below.
 
 2. I used a Twilio SIP trunk to connect to a provisioned phone channel on the assistant:
     - Voice Demo: Call **+1-339-329-9194** and follow the script.
