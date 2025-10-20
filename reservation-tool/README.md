@@ -6,6 +6,8 @@ This tool uses an Elasticsearch index to maintain a set of patient bed reservati
 - /reservation/{patient_id} (GET) - For getting the reservation for a single patient
 - /reservation/{patient_id} (DELETE) - For canceling a reservation for a single patient
 
+See the Open API spec for details on the API: [reservation-tool-open-api.json](./reservation-tool-open-api.json)
+
 ## Setup
 1. The reservation-tool requires a **.env** file in the root tool directory. You can copy the .env-example to .env to get started. The .env will need to include the following variables:
 
