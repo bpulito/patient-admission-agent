@@ -74,9 +74,9 @@ At this point you will need to create an IBM Code Engine service to pull in the 
 ## Security
 This tool is protected by bearer token authentication. Any client that uses this tool must pass the bearer token configured in the tools .env file in the form of an Authorization header like this:
 
-'''
+```
 Authorization: Bearer <configured bearer token>
-'''
+```
 
 ## Tool Limitations
 1. A single patiant ID can only create one reservation within the solution. A patient's previous reservation must be deleted before a new one can be created.
