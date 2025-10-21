@@ -14,9 +14,9 @@ Here are the instructions:
 
 2. Create a new Assistant.
 
-3. Create the reservation tool extension. Here is the associated [reservation-tool OpenAPI script](../reservation-tool/reservation-tool-open-api.json). Note that you will need the APIKEY for this tool that was setup in the .env file for the tool service.
+3. Create the reservation tool extension. Here is the associated [reservation-tool OpenAPI script](../reservation-tool/reservation-tool-open-api.json). Note that you will need the bearer token that was configured for this tool in the .env file for the tool service.
 
-4. Create the patient profile tool extension. Here is the associated [patient-profile-tool OpenAPI script](../patient-profile-tool/patient-profile-tool-open-api.json). Any APIKEY will be used for this stub.
+4. Create the patient profile tool extension. Here is the associated [patient-profile-tool OpenAPI script](../patient-profile-tool/patient-profile-tool-open-api.json). Any bearer token can be used for this stub.
 
 5. Import the Patient-Admissions-Assistant-action.json file to load the assistant.
 
