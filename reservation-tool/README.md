@@ -8,6 +8,22 @@ This tool uses an Elasticsearch index to maintain a set of patient bed reservati
 
 See the Open API spec for details on the API: [reservation-tool-open-api.json](./reservation-tool-open-api.json)
 
+## How are reservations managed?
+This tool is a front end to an Elasticsearch index that stores patient reservation JSON documents. Each JSON document represents a single day reservation for a single patient. For example, a 4 days stay at a hospital will result in four JSON documents being stored in the index. 
+
+A single reservation document contains the following data:
+```json
+{
+    "patient_id": <patient ID>,
+    "first_name": <first name>,
+    "last_name": <last name>,
+    "reservation_date": <start date of reservation>,
+    "bed_id": <ID of reserved bed>
+}
+```
+
+A current limitation is that only a single sequence of reservation documents can exist for a single patient in the system at a time. More complex logic could be added to support multiple sequences if needed.
+
 ## Setup
 1. The reservation-tool requires a **.env** file in the root tool directory. You can copy the .env-example to .env to get started. The .env will need to include the following variables:
 
