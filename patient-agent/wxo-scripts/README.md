@@ -3,6 +3,7 @@ These are various shell script used to setup all the agent related resources in 
 
 This is the list of files and their purpose:
 
+- **.env-example**: This file needs to be moved to .env prior to using the scripts in this folder. It contains all the environment variables that need to be updated to work with the ADK.
 - **activate-ibm-cloud-env.sh**: used to active the SaaS environment where the agent resources are uploaded.
 - **create-ibm-cloud-env.sh**: used to create the remote SaaS environment.
 - **export-patient-agent.sh**: used to export the agent yaml from cloud. This is helpful for archiving when changes are made in the cloud agent builder.
