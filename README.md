@@ -42,11 +42,11 @@ Feel free to veer off from this script but this will help you get started workin
 2. Assistant: "What is your patient ID."
 3. User: "The patient ID is 12345678."
 4. Assistant: "What is the patient's date of birth?"
-5. User: "The date of birth June 4, 1999 (any date will work)"
+5. User: "The date of birth is June 4, 1999 (any date will work)"
 6. Assistant: "What is the start date of the reservation?"
 7. User: "Two weeks from tomorrow."
 8. Assistant: "What is the length of stay?"
-9: User: "4 days"
+9. User: "4 days"
 10. Assistant: "Reservation was successful! Jim Briggs's reservation is for bed-1."
 
 Note that if a reservation already exist you may fail to create a new reservation. If this happens you can say:
@@ -63,4 +63,4 @@ You can also test slot filling by saying something like:
 
 The patient agent can be accessed from the following [webpage](https://bpulito.github.io/patient-admission-agent/patient-agent/patient-agent-homepage.html).
 
-You can use more or less the same script with the agent flow as the assistant with the addition of being able to ask general policy questions that will be resolved by the RAG search.
+You can can ask the same kind of questions to the agent as the assistant, with the addition of being able to ask general patient admission policy questions that will be resolved by the RAG search.
